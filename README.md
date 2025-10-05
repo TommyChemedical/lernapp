@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎮 Lernapp - Quiz Spiel
 
-## Getting Started
+Eine interaktive Quiz-App im Stil von Quizduell, gebaut mit Next.js und TypeScript.
 
-First, run the development server:
+## ✨ Features
+
+- **Quiz-Modus**: Multiple-Choice-Fragen mit 4 Antwortmöglichkeiten
+- **20-Sekunden-Timer**: Jede Frage hat ein Zeitlimit
+- **Visuelles Feedback**:
+  - ✅ Grün für richtige Antworten
+  - ❌ Rot für falsche Antworten
+- **Score-Tracking**: Verfolge deinen Punktestand
+- **Kategorien**: Fragen können nach Themen organisiert werden
+- **Erweiterbar**: Einfaches Hinzufügen neuer Spiele/Features
+
+## 🚀 Installation
 
 ```bash
+# Dependencies installieren
+npm install
+
+# Development Server starten
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Öffne [http://localhost:3000](http://localhost:3000) im Browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📝 Fragen hinzufügen
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Bearbeite die Datei `data/questions.md` und füge neue Fragen nach diesem Format hinzu:
 
-## Learn More
+```markdown
+## Frage X
+**Frage:** Deine Frage hier?
+**Optionen:**
+- Option 1
+- Option 2
+- Option 3
+- Option 4
+**Antwort:** Option 2
+**Kategorie:** Deine Kategorie
+---
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Wichtig:
+- Die **Antwort** muss exakt einer **Option** entsprechen
+- Jede Frage endet mit `---`
+- Du kannst beliebig viele Fragen hinzufügen
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 Spielablauf
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Start**: Klicke auf "Spiel starten"
+2. **Frage beantworten**: Wähle eine der 4 Optionen
+3. **Feedback**: Sofortiges visuelles Feedback (grün/rot)
+4. **Timer**: 20 Sekunden pro Frage
+5. **Ergebnis**: Am Ende siehst du deinen Score
 
-## Deploy on Vercel
+## 🛠️ Technologie-Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Frontend**: Next.js 15, React, TypeScript
+- **Styling**: Tailwind CSS
+- **Datenverwaltung**: Markdown-Datei (.md)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 Projektstruktur
+
+```
+lernapp/
+├── app/
+│   ├── api/questions/   # API zum Laden der Fragen
+│   └── page.tsx         # Quiz-Interface
+├── data/
+│   └── questions.md     # Fragendatenbank
+└── lib/
+    └── questions.ts     # Question Parser
+```
+
+## 🔮 Zukünftige Features
+
+- Weitere Spielmodi
+- Multiplayer-Funktion
+- Statistiken & Highscores
+- Verschiedene Schwierigkeitsstufen
+- Zeitbasierte Bonuspunkte
+
+## 📄 Lizenz
+
+Dieses Projekt ist für Bildungszwecke erstellt.
