@@ -43,6 +43,13 @@ export default function Home() {
     quizResults: {},
   });
 
+  // Log errors for debugging
+  useEffect(() => {
+    if (error) {
+      console.error('InstantDB error:', error);
+    }
+  }, [error]);
+
   // Load subjects on mount
   useEffect(() => {
     fetch('/api/subjects')
@@ -213,6 +220,15 @@ export default function Home() {
 
     return statsBySubject;
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
+        <div className="text-gray-800 text-2xl">Lade...</div>
+      </div>
+    );
+  }
 
   // Dashboard screen
   if (showDashboard) {
