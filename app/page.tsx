@@ -131,7 +131,7 @@ export default function Home() {
   // Welcome screen
   if (showWelcome) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500">
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
         <div className="bg-white rounded-2xl shadow-2xl p-12 max-w-md text-center">
           <h1 className="text-5xl font-bold text-gray-800 mb-8">🎮</h1>
           <button
@@ -148,7 +148,7 @@ export default function Home() {
   // Subject selection screen with slot machine effect
   if (!selectedSubject && !gameStarted) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-4">
+      <div className="flex items-center justify-center min-h-screen p-4" style={{ backgroundColor: '#FAF9F6' }}>
         <div className="bg-white rounded-2xl shadow-2xl p-12 max-w-2xl w-full text-center">
           {isSpinning ? (
             <div className="py-20">
@@ -193,7 +193,7 @@ export default function Home() {
 
   if (gameOver) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500">
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
         <div className="bg-white rounded-2xl shadow-2xl p-12 max-w-md text-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Quiz beendet!</h1>
           <div className="text-6xl font-bold text-purple-600 mb-6">
@@ -225,10 +225,10 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-4">
+    <div className="min-h-screen p-4" style={{ backgroundColor: '#FAF9F6' }}>
       <div className="max-w-4xl mx-auto pt-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8 text-white">
+        <div className="flex justify-between items-center mb-8 text-gray-800">
           <div className="text-xl font-semibold">
             Frage {currentQuestionIndex + 1}/{questions.length}
           </div>
@@ -237,7 +237,7 @@ export default function Home() {
 
         {/* Timer */}
         <div className="mb-8">
-          <div className="bg-white rounded-full h-4 overflow-hidden">
+          <div className="bg-gray-300 rounded-full h-4 overflow-hidden">
             <div
               className={`h-full ${
                 timeLeft > 10 ? 'bg-green-500' : timeLeft > 5 ? 'bg-yellow-500' : 'bg-red-500'
