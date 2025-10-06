@@ -32,23 +32,15 @@ export default function Home() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
-  const [userId, setUserId] = useState<string>('user-1');
+  const [userId] = useState<string>('user-1');
   const [userName, setUserName] = useState<string>('');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   // Query user data and quiz results
-  const { isLoading, error, data } = db.useQuery({
+  const { data } = db.useQuery({
     users: {},
     quizResults: {},
   });
-
-  // Log errors for debugging
-  useEffect(() => {
-    if (error) {
-      console.error('InstantDB error:', error);
-    }
-  }, [error]);
 
   // Load subjects on mount
   useEffect(() => {
@@ -70,6 +62,21 @@ export default function Home() {
     }
   }, [data, userId]);
 
+  const handleTimeout = () => {
+    setIsAnswered(true);
+    setTimeout(() => {
+      if (currentQuestionIndex + 1 < questions.length) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setSelectedAnswer(null);
+        setIsAnswered(false);
+        setTimeLeft(20);
+      } else {
+        saveQuizResult();
+        setGameOver(true);
+      }
+    }, 2000);
+  };
+
   // Timer
   useEffect(() => {
     if (!gameStarted || isAnswered || gameOver) return;
@@ -84,14 +91,8 @@ export default function Home() {
     }, 1000);
 
     return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, gameStarted, isAnswered, gameOver]);
-
-  const handleTimeout = () => {
-    setIsAnswered(true);
-    setTimeout(() => {
-      nextQuestion();
-    }, 2000);
-  };
 
   const handleAnswerClick = (answer: string) => {
     if (isAnswered) return;
@@ -221,14 +222,6 @@ export default function Home() {
     return statsBySubject;
   };
 
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
-        <div className="text-gray-800 text-2xl">Lade...</div>
-      </div>
-    );
-  }
 
   // Dashboard screen
   if (showDashboard) {
