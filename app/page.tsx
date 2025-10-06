@@ -37,10 +37,7 @@ export default function Home() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   // Query user data and quiz results
-  const { data } = db.useQuery({
-    users: {},
-    quizResults: {},
-  });
+  const { data } = db.useQuery({ users: {}, quizResults: {} } as any);
 
   // Load subjects on mount
   useEffect(() => {
@@ -54,8 +51,9 @@ export default function Home() {
 
   // Load user profile
   useEffect(() => {
-    if (data?.users && data.users.length > 0) {
-      const user = data.users.find((u) => u.id === userId);
+    const dbData = data as any;
+    if (dbData?.users && dbData.users.length > 0) {
+      const user = dbData.users.find((u: any) => u.id === userId);
       if (user) {
         setUserName(user.name);
       }
@@ -124,8 +122,8 @@ export default function Home() {
 
   const saveQuizResult = () => {
     if (selectedSubject) {
-      db.transact([
-        db.tx.quizResults[`${userId}-${Date.now()}`].update({
+      (db as any).transact([
+        (db as any).tx.quizResults[`${userId}-${Date.now()}`].update({
           userId,
           subject: selectedSubject,
           score,
@@ -163,7 +161,6 @@ export default function Home() {
   const handleCardClick = (index: number) => {
     if (flippedCards.includes(index)) return;
 
-    setSelectedCard(index);
     setFlippedCards([...flippedCards, index]);
 
     // Start game after card flip animation
@@ -178,7 +175,6 @@ export default function Home() {
     setGameOver(false);
     setShowDashboard(false);
     setFlippedCards([]);
-    setSelectedCard(null);
     startCardSelection();
   };
 
@@ -189,13 +185,12 @@ export default function Home() {
     setShowDashboard(true);
     setShowStats(false);
     setFlippedCards([]);
-    setSelectedCard(null);
   };
 
   const saveProfile = () => {
     if (userName.trim()) {
-      db.transact([
-        db.tx.users[userId].update({
+      (db as any).transact([
+        (db as any).tx.users[userId].update({
           id: userId,
           name: userName,
           createdAt: Date.now(),
@@ -206,12 +201,13 @@ export default function Home() {
   };
 
   const calculateStats = () => {
-    if (!data?.quizResults) return {};
+    const dbData = data as any;
+    if (!dbData?.quizResults) return {};
 
-    const userResults = data.quizResults.filter((r) => r.userId === userId);
+    const userResults = dbData.quizResults.filter((r: any) => r.userId === userId);
     const statsBySubject: { [key: string]: { total: number; correct: number } } = {};
 
-    userResults.forEach((result) => {
+    userResults.forEach((result: any) => {
       if (!statsBySubject[result.subject]) {
         statsBySubject[result.subject] = { total: 0, correct: 0 };
       }
