@@ -29,7 +29,8 @@ export default function Home() {
   const [timeLeft, setTimeLeft] = useState(20);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [isSpinning, setIsSpinning] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<number[]>([]);
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   // Load subjects on mount
   useEffect(() => {
@@ -108,16 +109,22 @@ export default function Home() {
       .catch((err) => console.error('Error loading questions:', err));
   };
 
-  const startSlotMachine = () => {
+  const startCardSelection = () => {
     setShowWelcome(false);
-    setIsSpinning(true);
+    const shuffled = [...subjects].sort(() => 0.5 - Math.random());
+    setDisplayedSubjects(shuffled.slice(0, 3));
+  };
 
-    // Spin animation duration
+  const handleCardClick = (index: number) => {
+    if (flippedCards.includes(index)) return;
+
+    setSelectedCard(index);
+    setFlippedCards([...flippedCards, index]);
+
+    // Start game after card flip animation
     setTimeout(() => {
-      const shuffled = [...subjects].sort(() => 0.5 - Math.random());
-      setDisplayedSubjects(shuffled.slice(0, 3));
-      setIsSpinning(false);
-    }, 2000);
+      handleSubjectSelect(displayedSubjects[index].name);
+    }, 600);
   };
 
   const restartGame = () => {
@@ -125,7 +132,9 @@ export default function Home() {
     setGameStarted(false);
     setGameOver(false);
     setShowWelcome(false);
-    startSlotMachine();
+    setFlippedCards([]);
+    setSelectedCard(null);
+    startCardSelection();
   };
 
   // Welcome screen
@@ -135,7 +144,7 @@ export default function Home() {
         <div className="bg-white rounded-2xl shadow-2xl p-12 max-w-md text-center">
           <h1 className="text-5xl font-bold text-gray-800 mb-8">🎮</h1>
           <button
-            onClick={startSlotMachine}
+            onClick={startCardSelection}
             className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-12 py-6 rounded-xl text-2xl font-bold hover:scale-105 transition-transform shadow-lg"
           >
             Spiel starten
@@ -145,44 +154,74 @@ export default function Home() {
     );
   }
 
-  // Subject selection screen with slot machine effect
+  // Card selection screen
   if (!selectedSubject && !gameStarted) {
     return (
       <div className="flex items-center justify-center min-h-screen p-4" style={{ backgroundColor: '#FAF9F6' }}>
-        <div className="bg-white rounded-2xl shadow-2xl p-12 max-w-2xl w-full text-center">
-          {isSpinning ? (
-            <div className="py-20">
-              <div className="grid grid-cols-3 gap-4">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="relative h-32 overflow-hidden">
-                    <div className="absolute inset-0 animate-spin-slot">
-                      {subjects.map((subject, idx) => (
-                        <div
-                          key={idx}
-                          className="h-32 flex items-center justify-center bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl mb-2 text-lg font-bold text-gray-800 p-4"
-                        >
-                          {subject.displayName}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : displayedSubjects.length === 0 ? (
+        <div className="max-w-4xl w-full text-center">
+          {displayedSubjects.length === 0 ? (
             <div className="text-gray-500">Lade Themen...</div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {displayedSubjects.map((subject) => (
-                <button
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {displayedSubjects.map((subject, index) => (
+                <div
                   key={subject.name}
-                  onClick={() => handleSubjectSelect(subject.name)}
-                  className="bg-gradient-to-r from-purple-100 to-pink-100 hover:from-purple-200 hover:to-pink-200 p-6 rounded-xl transition-all transform hover:scale-105 shadow-md flex items-center justify-center min-h-[120px]"
+                  className="card-flip-container perspective-1000 cursor-pointer"
+                  onClick={() => handleCardClick(index)}
                 >
-                  <div className="text-xl font-bold text-gray-800 break-words text-center px-2">
-                    {subject.displayName}
+                  <div
+                    className={`card-flip-inner ${flippedCards.includes(index) ? 'flipped' : ''}`}
+                    style={{
+                      width: '100%',
+                      height: '250px',
+                      position: 'relative',
+                      transformStyle: 'preserve-3d',
+                      transition: 'transform 0.6s',
+                    }}
+                  >
+                    {/* Card Back (initial state) */}
+                    <div
+                      className="card-face card-back"
+                      style={{
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                        backfaceVisibility: 'hidden',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        borderRadius: '16px',
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                      }}
+                    >
+                      <div className="text-6xl">?</div>
+                    </div>
+
+                    {/* Card Front (revealed) */}
+                    <div
+                      className="card-face card-front"
+                      style={{
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                        backfaceVisibility: 'hidden',
+                        transform: 'rotateY(180deg)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'white',
+                        borderRadius: '16px',
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                        padding: '20px',
+                      }}
+                    >
+                      <div className="text-2xl font-bold text-gray-800 break-words">
+                        {subject.displayName}
+                      </div>
+                    </div>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           )}
